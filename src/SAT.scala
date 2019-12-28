@@ -11,29 +11,26 @@ case class Bool(boolean: Boolean) extends PropositionalLogic
 
 object SAT extends App {
 
-  override def main(args: Array[String]): Unit = {
+  // Here we can write up any sentence in propositional logic and the reduction function, reduces it symbolically as
+  // simply as possible to CNF or DNF.
 
-    // Here we can write up any sentence in propositional logic and the reduction function, reduces it symbolically as
-    // simply as possible to CNF o  r DNF.
+  // isSatisfiable will determine if a sentence can be satisfied with some assignment. The idea is that we can
+  // hopefully eliminate a number of propositional atoms we need to check through symbolic manipulation before doing
+  // the expensive satisfiability check exhaustively.
 
-    // isSatisfiable will determine if a sentence can be satisfied with some assignment. The idea is that we can
-    // hopefully eliminate a number of propositional atoms we need to check through symbolic manipulation before doing
-    // the expensive satisfiability check exhaustively.
+  // SAT is NP-complete
 
-    // SAT is NP-complete
+  val p = Literal("p")
+  val q = Literal("q")
+  val r = Literal("r")
+  val propositionalAtoms = List(p, q, r)
 
-    val p = Literal("p")
-    val q = Literal("q")
-    val r = Literal("r")
-    val propositionalAtoms = List(p, q, r)
+  val exp = Or(Implies(r, And(p, Not(Or(Not(q), q)))), Bool(false))
+  val reducedExp = reduction(exp)
 
-    val exp = Or(Implies(r, And(p, Not(Or(Not(q), q)))), Bool(false))
-    val reducedExp = reduction(exp)
-
-    println(exp)
-    println(reducedExp)
-    println(isSatisfiable(propositionalAtoms, reducedExp))
-  }
+  println(exp)
+  println(reducedExp)
+  println(isSatisfiable(propositionalAtoms, reducedExp))
 
   def replaceAllLiterals(id: String, bool: Bool, propositionalLogic: PropositionalLogic): PropositionalLogic = {
     propositionalLogic match {
